@@ -1,4 +1,4 @@
-package com.example.currencyTask.presentation.ui.main
+package com.example.currency.presentation.ui.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.currencyTask.presentation.utils.ext.isVisible
+import com.example.currency.presentation.utils.ext.isVisible
 import com.example.currencytask.R
 import com.example.currencytask.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint

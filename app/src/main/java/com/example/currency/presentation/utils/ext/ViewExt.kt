@@ -1,4 +1,4 @@
-package com.example.currencyTask.presentation.utils.ext
+package com.example.currency.presentation.utils.ext
 
 import android.view.View
 import androidx.constraintlayout.widget.Group

@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CurrencyTask"
         tools:targetApi="31"
-        android:name=".presentation.ui.myApp.MyApplication">
+        android:name="com.example.currency.presentation.ui.myApp.MyApplication">
         <activity
-            android:name=".presentation.ui.main.MainActivity"
+            android:name="com.example.currency.presentation.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

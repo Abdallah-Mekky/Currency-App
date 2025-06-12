@@ -1,4 +1,4 @@
-package com.example.currencyTask.presentation.ui.splash
+package com.example.currency.presentation.ui.splash
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.currencyTask.presentation.utils.ext.toGone
+import com.example.currency.presentation.utils.ext.toGone
 import com.example.currencytask.R
 import com.example.currencytask.databinding.FragmentSplashBinding
 import dagger.hilt.android.AndroidEntryPoint

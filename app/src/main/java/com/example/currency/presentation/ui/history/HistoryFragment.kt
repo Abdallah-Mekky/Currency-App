@@ -1,4 +1,4 @@
-package com.example.currencyTask.presentation.ui.history
+package com.example.currency.presentation.ui.history
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

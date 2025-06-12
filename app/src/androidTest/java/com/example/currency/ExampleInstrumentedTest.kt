@@ -1,4 +1,4 @@
-package com.example.currencyTask
+package com.example.currency
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
