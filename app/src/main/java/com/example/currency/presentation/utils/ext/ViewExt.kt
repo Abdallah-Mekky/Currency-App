@@ -23,3 +23,13 @@ fun View.toGone() {
         this.requestLayout()
     }
 }
+
+fun View.enable() {
+    isEnabled = true
+    alpha = 1f
+}
+
+fun View.disable() {
+    isEnabled = false
+    alpha = 0.5f
+}
