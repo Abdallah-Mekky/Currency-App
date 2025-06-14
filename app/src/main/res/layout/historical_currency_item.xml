@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.currency.domain.model.HistoricalCurrenciesData" />
+
+        <variable
+            name="historicalCurrenciesData"
+            type="HistoricalCurrenciesData" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/fromCurrencyToCurrencyTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{historicalCurrenciesData.fromCurrencyToCurrency}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="From USD To EGP :" />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/fromCurrencyAmountTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:text="@{historicalCurrenciesData.fromCurrencyAmount}"
+            android:textColor="@color/currency_green"
+            android:textSize="@dimen/_10ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/fromCurrencyToCurrencyTxt"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/forwardArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@id/fromCurrencyAmountTxt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/toCurrencyAmountTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:text="@{historicalCurrenciesData.toCurrencyAmount}"
+            android:textColor="@color/color_red"
+            android:textSize="@dimen/_10ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/forwardArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="49" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

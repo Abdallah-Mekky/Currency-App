@@ -25,7 +25,7 @@ class SplashFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        splashViewModel.loadAllCurrenciesRates()
     }
 
     override fun onCreateView(
@@ -40,8 +40,7 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
-            splashViewModel.loadAllCurrenciesRates()
-            delay(2000) //simulate api request
+            delay(2000)
             findNavController().navigate(R.id.homeFragment)
         }
     }

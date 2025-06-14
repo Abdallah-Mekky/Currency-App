@@ -41,7 +41,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Select Currency"
+                android:hint="Currency"
                 app:boxStrokeColor="@color/currency_green"
                 app:endIconTint="@color/currency_green"
                 app:hintTextColor="@color/currency_green">
@@ -126,7 +126,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Select Currency"
+                android:hint="Currency"
                 app:boxStrokeColor="@color/currency_green"
                 app:endIconTint="@color/currency_green"
                 app:hintTextColor="@color/currency_green">

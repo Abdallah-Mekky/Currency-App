@@ -1,4 +1,4 @@
-package com.example.currency.domain.usecase
+package com.example.currency.domain.usecase.currencies
 
 import com.example.currency.data.source.local.dao.CurrenciesRatesDao
 import javax.inject.Inject

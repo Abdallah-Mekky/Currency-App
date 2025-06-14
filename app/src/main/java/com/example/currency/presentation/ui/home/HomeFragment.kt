@@ -61,6 +61,7 @@ class HomeFragment : Fragment() {
             toCurrencyCode = "EGP",
             fromCurrencyAmount = 1
         )
+        homeViewModel.getLastUpdateTime()
     }
 
     override fun onCreateView(
