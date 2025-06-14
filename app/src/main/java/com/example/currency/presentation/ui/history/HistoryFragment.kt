@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.currency.domain.model.DayValidator
 import com.example.currency.domain.model.HistoricalCurrenciesData
 import com.example.currency.presentation.ui.adapter.HistoricalCurrenciesAdapter
+import com.example.currency.presentation.utils.ext.showSnackBar
 import com.example.currency.presentation.utils.ext.toGone
 import com.example.currency.presentation.utils.ext.toVisible
 import com.example.currencytask.databinding.FragmentHistoryBinding
@@ -63,6 +64,7 @@ class HistoryFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             launch { subscribeToLastFourDays() }
             launch { subscribeToHistoricalCurrenciesData() }
+            launch { subscribeToUiErrors() }
         }
     }
 
@@ -98,6 +100,23 @@ class HistoryFragment : Fragment() {
                     }
                 }
             }
+    }
+
+    private suspend fun subscribeToUiErrors() {
+        historyViewModel.uiErrors.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
+            .flowOn(Dispatchers.IO).collectLatest { message ->
+                Log.e("Api" , "HomeFragmnet :: subscribeToUiErrors error = ${
+                    message
+                } ")
+
+                bindErrorMessages(message)
+            }
+    }
+
+    private fun bindErrorMessages(message: String) {
+        if (message.isNotEmpty()){
+            binding.root.showSnackBar(message = message)
+        }
     }
 
     private fun bindCurrentDay(day : DayValidator) {

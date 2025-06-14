@@ -16,6 +16,7 @@ import com.example.currency.domain.model.CurrenciesRatesData
 import com.example.currency.presentation.ui.adapter.CurrencyRateAdapter
 import com.example.currency.presentation.utils.ext.disable
 import com.example.currency.presentation.utils.ext.enable
+import com.example.currency.presentation.utils.ext.showSnackBar
 import com.example.currencytask.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -103,6 +104,7 @@ class HomeFragment : Fragment() {
             launch { subscribeToCurrenciesRates() }
             launch { subscribeToLastTimeUpdate() }
             launch { subscribeToCurrencyCalculation() }
+            launch { subscribeToUiErrors() }
         }
     }
 
@@ -141,6 +143,23 @@ class HomeFragment : Fragment() {
 
                 bindConvertedCurrencyAmount(currencyCalculation.toCurrencyAmount.toString())
             }
+    }
+
+    private suspend fun subscribeToUiErrors() {
+        homeViewModel.uiErrors.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
+            .flowOn(Dispatchers.IO).collectLatest { message ->
+                Log.e("Api" , "HomeFragmnet :: subscribeToUiErrors error = ${
+                    message
+                } ")
+
+                bindErrorMessages(message)
+            }
+    }
+
+    private fun bindErrorMessages(message: String) {
+        if (message.isNotEmpty()){
+            binding.root.showSnackBar(message = message)
+        }
     }
 
 //    private fun initDropDownMenusAdapters() {

@@ -6,16 +6,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CurrenciesDataNetwork(
-    val success: Boolean,
-    val timestamp: Long,
-    @SerialName("base") val baseCurrency: String,
-    val date: String,
-    val rates: Map<String, Double>
-) {
-//    fun toDomain() = CurrenciesRatesData(
-//        status = success,
-//        timestamp = timestamp,
-//        date = date,
-//        rates = rates
-//    )
-}
+    val success: Boolean? = null,
+    val error: ErrorDetail? = null,
+    val timestamp: Long? = null,
+    @SerialName("base") val baseCurrency: String ? = null,
+    val date: String? = null,
+    val rates: Map<String, Double> ? = null
+)
+
+@Serializable
+data class ErrorDetail(
+    val code: Int? = null,
+    val type: String? = null,
+    val info: String? = null
+)

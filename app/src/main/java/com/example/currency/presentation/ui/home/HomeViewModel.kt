@@ -43,140 +43,171 @@ class HomeViewModel @Inject constructor(
     private val _currencyCalculationState = MutableStateFlow(CurrencyCalculation())
     val currencyCalculationState: StateFlow<CurrencyCalculation> = _currencyCalculationState
 
-    private val _uiErrors = MutableSharedFlow<Unit>()
-    val uiErrors: SharedFlow<Unit> = _uiErrors.asSharedFlow()
-
+    private val _uiErrors = MutableSharedFlow<String>()
+    val uiErrors: SharedFlow<String> = _uiErrors.asSharedFlow()
 
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
 
 
-
-        }
-    }
-
-    fun checkCurrenciesRatesNeededUpdate() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val lastUpdatedTime = getLastUpdatedTimeUseCase.invoke()
-            val now = System.currentTimeMillis()
-            val twentyFourHours = 24 * 60 * 60 * 1000L
-
-            if (now - lastUpdatedTime > twentyFourHours) {
-                _uiErrors.emit(Unit)
-            }
         }
     }
 
 
     fun getLastUpdateTime() {
-        viewModelScope.launch(Dispatchers.IO){
-            val lastUpdateTime = getFormattedLastUpdatedTimeUseCase.invoke()
-            _lastUpdateTimeState.emit(lastUpdateTime)
-        }
-    }
-
-    fun getAllCurrenciesRates() {
-        viewModelScope.launch(Dispatchers.IO){
-            getAllCurrenciesRatesUseCase.invoke().collectLatest { currenciesRatesList ->
-                Log.e("Api" , "HomeViewModel :: currenciesRatesList = ${
-                    currenciesRatesList.joinToString()
-                } ")
-                _currenciesRatesState.emit(currenciesRatesList)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val lastUpdateTime = getFormattedLastUpdatedTimeUseCase.invoke()
+                _lastUpdateTimeState.emit(lastUpdateTime)
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
         }
     }
 
-    fun updateFromCurrency(fromCurrencyCode : String,fromCurrencyRate: Double) {
+    fun getAllCurrenciesRates() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.e("Api" , "HomeViewModel :: updateFromCurrency 1 =")
-//            val fromCurrencyRate = getCurrencyRateUseCase.invoke(fromCurrencyCode)
-            _currencyCalculationState.update { currencyCalculation -> currencyCalculation.copy(
-                fromCurrencyCode = fromCurrencyCode,
-                fromCurrencyRate = fromCurrencyRate
-            ) }
+            try {
+                getAllCurrenciesRatesUseCase.invoke().collectLatest { currenciesRatesList ->
+                    Log.e(
+                        "Api", "HomeViewModel :: currenciesRatesList = ${
+                            currenciesRatesList.joinToString()
+                        } "
+                    )
+                    _currenciesRatesState.emit(currenciesRatesList)
+                }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
+            }
 
-            calculateConvertedCurrency()
+        }
+    }
+
+    fun updateFromCurrency(fromCurrencyCode: String, fromCurrencyRate: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Log.e("Api", "HomeViewModel :: updateFromCurrency 1 =")
+                _currencyCalculationState.update { currencyCalculation ->
+                    currencyCalculation.copy(
+                        fromCurrencyCode = fromCurrencyCode,
+                        fromCurrencyRate = fromCurrencyRate
+                    )
+                }
+
+                calculateConvertedCurrency()
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
+            }
+
         }
     }
 
     fun updateToCurrency(toCurrencyCode: String, toCurrencyRate: Double) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.e("Api" , "HomeViewModel :: updateFromCurrency 2 =")
+            Log.e("Api", "HomeViewModel :: updateFromCurrency 2 =")
+            try {
+                _currencyCalculationState.update { currencyCalculation ->
+                    currencyCalculation.copy(
+                        toCurrencyCode = toCurrencyCode,
+                        toCurrencyRate = toCurrencyRate
+                    )
+                }
 
+                calculateConvertedCurrency()
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
+            }
 //            val toCurrencyRate = getCurrencyRateUseCase.invoke(toCurrencyCode)
-            _currencyCalculationState.update { currencyCalculation -> currencyCalculation.copy(
-                toCurrencyCode = toCurrencyCode,
-                toCurrencyRate = toCurrencyRate
-            ) }
 
-            calculateConvertedCurrency()
         }
     }
 
     fun updateFromCurrencyAmount(fromCurrencyAmount: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.e("Api" , "HomeViewModel :: updateFromCurrency 3 =")
+            Log.e("Api", "HomeViewModel :: updateFromCurrency 3 =")
+            try {
+                if (_currencyCalculationState.value.fromCurrencyAmount != fromCurrencyAmount) {
 
-            if (_currencyCalculationState.value.fromCurrencyAmount != fromCurrencyAmount) {
+                    _currencyCalculationState.update { currencyCalculation ->
+                        currencyCalculation.copy(
+                            fromCurrencyAmount = fromCurrencyAmount
+                        )
+                    }
 
-                _currencyCalculationState.update { currencyCalculation -> currencyCalculation.copy(
-                    fromCurrencyAmount = fromCurrencyAmount
-                ) }
-
-                calculateConvertedCurrency()
+                    calculateConvertedCurrency()
+                }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
         }
     }
 
-    fun updateCurrencyCalculation(fromCurrencyCode: String,toCurrencyCode: String,fromCurrencyAmount: Int) {
+    fun updateCurrencyCalculation(
+        fromCurrencyCode: String,
+        toCurrencyCode: String,
+        fromCurrencyAmount: Int
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.e("Api" , "HomeViewModel :: updateFromCurrency 4 =")
+            Log.e("Api", "HomeViewModel :: updateFromCurrency 4 =")
+            try {
+                val fromCurrencyRate = getCurrencyRateUseCase.invoke(fromCurrencyCode)
+                val toCurrencyRate = getCurrencyRateUseCase.invoke(toCurrencyCode)
+                _currencyCalculationState.update { currencyCalculation ->
+                    currencyCalculation.copy(
+                        fromCurrencyCode = fromCurrencyCode,
+                        fromCurrencyRate = fromCurrencyRate,
+                        toCurrencyCode = toCurrencyCode,
+                        toCurrencyRate = toCurrencyRate,
+                        fromCurrencyAmount = fromCurrencyAmount
+                    )
+                }
 
-            val fromCurrencyRate = getCurrencyRateUseCase.invoke(fromCurrencyCode)
-            val toCurrencyRate = getCurrencyRateUseCase.invoke(toCurrencyCode)
-            _currencyCalculationState.update { currencyCalculation -> currencyCalculation.copy(
-                fromCurrencyCode = fromCurrencyCode,
-                fromCurrencyRate = fromCurrencyRate,
-                toCurrencyCode = toCurrencyCode,
-                toCurrencyRate = toCurrencyRate,
-                fromCurrencyAmount = fromCurrencyAmount
-            ) }
-
-            calculateConvertedCurrency()
+                calculateConvertedCurrency()
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
+            }
         }
     }
 
     private fun calculateConvertedCurrency() {
         viewModelScope.launch(Dispatchers.IO) {
-            val toCurrencyAmount =
-                calculateConvertedAmountUseCase.invoke(_currencyCalculationState.value)
-            _currencyCalculationState.update { currencyCalculation ->
-                currencyCalculation.copy(
-                    toCurrencyAmount = toCurrencyAmount
+            try {
+                val toCurrencyAmount =
+                    calculateConvertedAmountUseCase.invoke(_currencyCalculationState.value)
+                _currencyCalculationState.update { currencyCalculation ->
+                    currencyCalculation.copy(
+                        toCurrencyAmount = toCurrencyAmount
+                    )
+                }
+
+                insertCurrencyTransaction()
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
+            }
+        }
+    }
+
+    private suspend fun insertCurrencyTransaction() {
+        try {
+            if (_currencyCalculationState.value.fromCurrencyAmount!! > 0) {
+                addCurrencyTransactionUseCase.invoke(
+                    fromCurrencyToCurrency =
+                    "From ${_currencyCalculationState.value.fromCurrencyCode} To ${_currencyCalculationState.value.toCurrencyCode}",
+                    fromCurrencyAmount = "${_currencyCalculationState.value.fromCurrencyAmount}",
+                    toCurrencyAmount = _currencyCalculationState.value.toCurrencyAmount.toString()
                 )
             }
-
-            insertCurrencyTransaction()
+        } catch (exception: Exception) {
+            _uiErrors.emit(exception.message ?: "")
         }
-    }
 
-    private suspend fun insertCurrencyTransaction(){
-        if (_currencyCalculationState.value.fromCurrencyAmount!! > 0) {
-            addCurrencyTransactionUseCase.invoke(
-                fromCurrencyToCurrency =
-                "From ${_currencyCalculationState.value.fromCurrencyCode} To ${_currencyCalculationState.value.toCurrencyCode}",
-                fromCurrencyAmount = "${_currencyCalculationState.value.fromCurrencyAmount}",
-                toCurrencyAmount = _currencyCalculationState.value.toCurrencyAmount.toString()
-            )
-        }
     }
-
 
 
     override fun onCleared() {
         super.onCleared()
-        Log.e("Api" , "HomeVIEWModel :: onClear ")
+        Log.e("Api", "HomeVIEWModel :: onClear ")
 
     }
 }

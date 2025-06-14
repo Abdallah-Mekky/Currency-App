@@ -10,8 +10,11 @@ import com.example.currency.domain.usecase.historical.GetHistoricalCurrenciesDat
 import com.example.currency.domain.usecase.historical.GetLastFourDaysUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +32,8 @@ class HistoryViewModel @Inject constructor(
     private val _historicalCurrenciesDataState = MutableStateFlow<List<HistoricalCurrenciesData>?>(null)
     val historicalCurrenciesDataState: StateFlow<List<HistoricalCurrenciesData>?> = _historicalCurrenciesDataState
 
+    private val _uiErrors = MutableSharedFlow<String>()
+    val uiErrors: SharedFlow<String> = _uiErrors.asSharedFlow()
 
     private var dayCounter : Int? = 0
     private var maxDays : Int? = 3
@@ -36,51 +41,70 @@ class HistoryViewModel @Inject constructor(
 
     fun getLastFourDays() {
         viewModelScope.launch(Dispatchers.IO) {
-            getLastFourDaysUseCase.invoke().collectLatest { lastFourDaysList ->
-                if(lastFourDaysList.isNotEmpty()) {
-                     fourDaysList = lastFourDaysList
-                    getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
-                    _currentDaysState.emit(fourDaysList[dayCounter!!])
+            try {
+                getLastFourDaysUseCase.invoke().collectLatest { lastFourDaysList ->
+                    if(lastFourDaysList.isNotEmpty()) {
+                        fourDaysList = lastFourDaysList
+                        getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
+                        _currentDaysState.emit(fourDaysList[dayCounter!!])
+                    }
                 }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
         }
     }
 
     fun getNextDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (dayCounter!! < maxDays!!) {
-                dayCounter = dayCounter?.inc()
-                getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
-                _currentDaysState.emit(fourDaysList[dayCounter!!])
+            try {
+                if (dayCounter!! < maxDays!!) {
+                    dayCounter = dayCounter?.inc()
+                    getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
+                    _currentDaysState.emit(fourDaysList[dayCounter!!])
+                }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
+
         }
 
     }
 
     fun getPreviousDay() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (dayCounter!! > 0) {
-                dayCounter = dayCounter?.dec()
-                getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
-                _currentDaysState.emit(fourDaysList[dayCounter!!])
+            try {
+                if (dayCounter!! > 0) {
+                    dayCounter = dayCounter?.dec()
+                    getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
+                    _currentDaysState.emit(fourDaysList[dayCounter!!])
+                }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
+
         }
     }
 
     private fun getHistoricalCurrenciesData(day: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            getHistoricalCurrenciesDataByDayUseCase.invoke(day = day).collect { historicalCurrenciesDataList ->
-                Log.e("Api" , "History VIEWMODEL :: ,day = ${day} ,  getHistoricalCurrenciesData = ${
-                    historicalCurrenciesDataList.joinToString()
-                } ")
-                if (historicalCurrenciesDataList.isNotEmpty()) {
-                    _historicalCurrenciesDataState.emit(historicalCurrenciesDataList)
-                } else {
-                    _historicalCurrenciesDataState.emit(emptyList())
-                }
+            try {
+                getHistoricalCurrenciesDataByDayUseCase.invoke(day = day).collect { historicalCurrenciesDataList ->
+                    Log.e("Api" , "History VIEWMODEL :: ,day = ${day} ,  getHistoricalCurrenciesData = ${
+                        historicalCurrenciesDataList.joinToString()
+                    } ")
+                    if (historicalCurrenciesDataList.isNotEmpty()) {
+                        _historicalCurrenciesDataState.emit(historicalCurrenciesDataList)
+                    } else {
+                        _historicalCurrenciesDataState.emit(emptyList())
+                    }
 
-                deleteDaysAfterFourUseCase.invoke(fourDaysList.first().currentDay)
+                    deleteDaysAfterFourUseCase.invoke(fourDaysList.first().currentDay)
+                }
+            } catch (exception: Exception) {
+                _uiErrors.emit(exception.message ?: "")
             }
+
         }
     }
 
