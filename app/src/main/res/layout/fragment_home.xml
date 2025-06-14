@@ -12,16 +12,175 @@
         android:layout_height="match_parent"
         tools:context=".presentation.ui.home.HomeFragment">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/fromTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/home"
-            android:textSize="@dimen/_22ssp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:text="From"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20ssp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/fromContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fromTxt"
+            app:layout_constraintWidth_percent=".3">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Select Currency"
+                app:boxStrokeColor="@color/currency_green"
+                app:endIconTint="@color/currency_green"
+                app:hintTextColor="@color/currency_green">
+
+                <AutoCompleteTextView
+                    android:id="@+id/fromAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="USD"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fromAmountTextInputLayout"
+                style="@style/TextInputOutlineLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:hint="Enter amount"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="4dp"
+                app:hintTextColor="@color/currency_green">
+
+                <com.google.android.material.textfield.TextInputEditText
+                   android:id="@+id/fromAmountEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:text="1"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/toTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:text="To"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/swapBtn"
+            style="@style/MaterialButtonOutlineStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="Swap"
+            app:layout_constraintStart_toEndOf="@id/fromContainer"
+            app:layout_constraintEnd_toStartOf="@id/toContainer"
+            app:layout_constraintTop_toTopOf="@id/fromContainer"
+            app:layout_constraintBottom_toBottomOf="@id/fromContainer"
+            />
+
+        <LinearLayout
+            android:id="@+id/toContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/swapBtn"
+            app:layout_constraintTop_toBottomOf="@id/toTxt"
+            app:layout_constraintWidth_percent=".3">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Select Currency"
+                app:boxStrokeColor="@color/currency_green"
+                app:endIconTint="@color/currency_green"
+                app:hintTextColor="@color/currency_green">
+
+                <AutoCompleteTextView
+                    android:id="@+id/toAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="EGP"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/toAmountTextInputLayout"
+                style="@style/TextInputOutlineLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:hint="Amount"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="4dp"
+                app:hintTextColor="@color/currency_green">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/toAmountEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    tools:text="@tools:sample/first_names"
+                    android:enabled="false"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lastUpdateTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:text="From"
+            android:textColor="@color/currency_green"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fromContainer"
+
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
