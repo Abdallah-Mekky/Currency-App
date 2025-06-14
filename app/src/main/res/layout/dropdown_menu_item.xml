@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.example.currency.domain.model.CurrenciesRatesData" />
+
+        <variable
+            name="currencyRate"
+            type="CurrenciesRatesData" />
+
+    </data>
+
+        <TextView
+            android:id="@+id/selection_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            android:padding="@dimen/_8sdp"
+            tools:text="USD" />
+
+</layout>
