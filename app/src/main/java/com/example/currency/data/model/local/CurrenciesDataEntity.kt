@@ -13,8 +13,9 @@ data class CurrenciesDataEntity(
     @ColumnInfo(name = "currency_rate")
     val currencyRate: Double,
     val date: String,
-    val timestamp: Long) {
-
+    val timestamp: Long
+) {
+    /** To convert entity model to domain model [CurrenciesRatesData] **/
     fun toDomain() = CurrenciesRatesData(
         currencyCode = currencyCode,
         currencyRate = currencyRate,

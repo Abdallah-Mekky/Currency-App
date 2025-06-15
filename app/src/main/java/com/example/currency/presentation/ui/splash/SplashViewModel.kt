@@ -17,19 +17,18 @@ class SplashViewModel @Inject constructor(
     private val loadAllCurrenciesRatesUseCase: LoadAllCurrenciesRatesUseCase
 ) : ViewModel() {
 
-//    private val _uiActions = MutableSharedFlow<Unit>()
-//    val uiActions: SharedFlow<Unit> = _uiActions.asSharedFlow()
-
+    /** To control actions and do one time event **/
     private val _uiActions = MutableSharedFlow<String>(replay = 1)
     val uiActions: SharedFlow<String> = _uiActions.asSharedFlow()
 
-
-
-     fun loadAllCurrenciesRates() {
+    /**
+     * Loads all currency rates by invoking the use case and emits UI actions based on the result.
+     **/
+    fun loadAllCurrenciesRates() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(val result = loadAllCurrenciesRatesUseCase.invoke()) {
+            when (val result = loadAllCurrenciesRatesUseCase.invoke()) {
                 is Result.Success<Unit> -> {
-                 _uiActions.emit("")
+                    _uiActions.emit("")
                 }
 
                 is Result.ApiException -> {
@@ -43,20 +42,6 @@ class SplashViewModel @Inject constructor(
                 is Result.UnexpectedException -> {
                     _uiActions.emit(result.message)
                 }
-
-                else -> {Unit}
-            }
-        }
-    }
-
-    fun checkCurrenciesRatesNeededUpdate() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val lastUpdatedTime = getLastUpdatedTimeUseCase.invoke()
-            val now = System.currentTimeMillis()
-            val twentyFourHours = 24 * 60 * 60 * 1000L
-
-            if (now - lastUpdatedTime > twentyFourHours) {
-                //_uiErrors.emit(Unit)
             }
         }
     }

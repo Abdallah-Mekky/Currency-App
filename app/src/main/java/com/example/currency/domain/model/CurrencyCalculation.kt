@@ -1,5 +1,8 @@
 package com.example.currency.domain.model
 
+/**
+ * Represent all properties required to control currency calculation
+ */
 data class CurrencyCalculation(
     val fromCurrencyCode: String? = null,
     val fromCurrencyRate: Double? = null,

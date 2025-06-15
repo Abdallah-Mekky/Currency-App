@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HistoricalCurrenciesDao {
 
+    /** Get last four days of user transactions **/
     @Query("""
     SELECT date FROM (
         SELECT DISTINCT date 
@@ -21,12 +22,15 @@ interface HistoricalCurrenciesDao {
     """)
     fun getLastFourDays(): Flow<List<String>>
 
+    /** Insert user transaction / history currency **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistoryCurrency(transaction: HistoricalCurrenciesDataEntity)
 
+    /** Get user transactions in specific day **/
     @Query("SELECT * FROM historical_currencies_data WHERE date = :day")
     fun getHistoricalCurrenciesDataByDay(day: String): Flow<List<HistoricalCurrenciesDataEntity>>
 
+    /** Delete all days after for days as per not needed **/
     @Query("DELETE FROM historical_currencies_data WHERE date < :lastDay")
     suspend fun deleteDaysAfterFour(lastDay: String)
 }

@@ -6,17 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
 import com.example.currency.domain.model.CurrenciesRatesData
 import com.example.currencytask.R
-import com.example.currencytask.databinding.DropdownMenuItemBinding
 
+/**
+ * A custom [ArrayAdapter] used to display a list of currency rates in a dropdown menu.
+ *
+ * This adapter is designed for use with an AutoCompleteTextView,
+ * rendering each item with a custom layout defined in `R.layout.dropdown_menu_item`.
+ *
+ * @param context The context used to inflate views.
+ * @param items The list of [CurrenciesRatesData] to display in the dropdown.
+ */
 class CurrencyRateAdapter(
     context: Context,
     private var items: List<CurrenciesRatesData>
 ) : ArrayAdapter<CurrenciesRatesData>(
     context,
-    R.layout.dropdown_menu_item, // your custom layout
+    R.layout.dropdown_menu_item,
     items
 ) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -28,22 +35,6 @@ class CurrencyRateAdapter(
     }
 
     private fun createCustomView(position: Int, convertView: View?, parent: ViewGroup): View {
-
-//        val view: View
-//        val vh: ItemRowHolder
-//        if (convertView == null) {
-//            vh = ItemRowHolder(LayoutInflater.from(parent.context)).apply {
-//                view = itemBinding.root
-//            }
-//            view.tag = vh
-//        } else {
-//            view = convertView
-//            vh = view.tag as ItemRowHolder
-//        }
-//
-//        vh.itemBinding.currencyRate = getItem(position)
-//        vh.itemBinding.executePendingBindings()
-//        return view
         val view = convertView ?: LayoutInflater.from(context)
             .inflate(R.layout.dropdown_menu_item, parent, false)
 
@@ -57,16 +48,4 @@ class CurrencyRateAdapter(
     override fun getItem(position: Int): CurrenciesRatesData? {
         return items.getOrNull(position)
     }
-
-//    private class ItemRowHolder(inflater: LayoutInflater) {
-//        val itemBinding: DropdownMenuItemBinding =
-//            DataBindingUtil.inflate(inflater, R.layout.dropdown_menu_item, null, false)
-//    }
-
-//     fun updateItems(newItems: List<CurrenciesRatesData>) {
-//        items = newItems
-//        clear()
-//        addAll(newItems)
-//        notifyDataSetChanged()
-//    }
 }

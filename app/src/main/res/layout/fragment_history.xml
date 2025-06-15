@@ -16,49 +16,49 @@
             android:id="@+id/backArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_back"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_10sdp"
-            />
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_arrow_back" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/currentDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            tools:text="From"
             android:textColor="@color/black"
             android:textSize="@dimen/_20ssp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/backArrow"
             app:layout_constraintEnd_toStartOf="@id/forwardArrow"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/backArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="From" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/forwardArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_forward"
             android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_10sdp"
-            />
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_forward" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/historicalCurrenciesRV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginEnd="@dimen/_5sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/currentDay"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/currentDay"
             tools:listitem="@layout/historical_currency_item"
             tools:visibility="visible" />
 
@@ -67,15 +67,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:text="There is no data"
+            android:text="@string/there_is_no_data"
             android:textColor="@color/black"
             android:textSize="@dimen/_20ssp"
             android:textStyle="bold"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/backArrow"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/backArrow" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

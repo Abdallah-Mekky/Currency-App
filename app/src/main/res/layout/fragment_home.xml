@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_25sdp"
-            android:text="From"
+            android:text="@string/from_txt"
             android:textColor="@color/black"
             android:textSize="@dimen/_20ssp"
             android:textStyle="bold"
@@ -41,7 +41,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Currency"
+                android:hint="@string/currency_txt"
                 app:boxStrokeColor="@color/currency_green"
                 app:endIconTint="@color/currency_green"
                 app:hintTextColor="@color/currency_green">
@@ -51,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:text="USD"
+                    android:text="@string/usd_txt"
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,19 +63,18 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_weight="1"
-                android:hint="Enter amount"
+                android:hint="@string/enter_amount_txt"
                 android:paddingHorizontal="4dp"
                 android:paddingVertical="4dp"
                 app:hintTextColor="@color/currency_green">
 
                 <com.google.android.material.textfield.TextInputEditText
-                   android:id="@+id/fromAmountEditText"
+                    android:id="@+id/fromAmountEditText"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:imeOptions="actionDone"
                     android:inputType="number"
-                    android:text="1"
-                    />
+                    android:text="@string/_1_for_default" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,13 +101,12 @@
             style="@style/MaterialButtonOutlineStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:text="Swap"
-            app:layout_constraintStart_toEndOf="@id/fromContainer"
-            app:layout_constraintEnd_toStartOf="@id/toContainer"
-            app:layout_constraintTop_toTopOf="@id/fromContainer"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/fromContainer"
-            />
+            app:layout_constraintEnd_toStartOf="@id/toContainer"
+            app:layout_constraintStart_toEndOf="@id/fromContainer"
+            app:layout_constraintTop_toTopOf="@id/fromContainer" />
 
         <LinearLayout
             android:id="@+id/toContainer"
@@ -157,10 +155,10 @@
                     android:id="@+id/toAmountEditText"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:enabled="false"
                     android:imeOptions="actionDone"
                     android:inputType="number"
-                    tools:text="@tools:sample/first_names"
-                    android:enabled="false"/>
+                    tools:text="@tools:sample/first_names" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_50sdp"
-            android:text="From"
+            tools:text="From"
             android:textColor="@color/currency_green"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"

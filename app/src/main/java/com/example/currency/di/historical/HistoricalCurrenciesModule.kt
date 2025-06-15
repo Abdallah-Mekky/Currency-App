@@ -15,7 +15,9 @@ object HistoricalCurrenciesModule {
 
     @Provides
     @Singleton
-    fun provideHistoricalCurrenciesRepo(historicalCurrenciesDao: HistoricalCurrenciesDao) : HistoricalCurrenciesRepo {
+    fun provideHistoricalCurrenciesRepo(
+        historicalCurrenciesDao: HistoricalCurrenciesDao
+    ): HistoricalCurrenciesRepo {
         return HistoricalCurrenciesRepoImpl(historicalCurrenciesDao)
     }
 }

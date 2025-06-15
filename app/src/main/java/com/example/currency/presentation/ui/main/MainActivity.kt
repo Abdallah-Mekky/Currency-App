@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +15,7 @@ import com.example.currency.presentation.utils.ext.isVisible
 import com.example.currencytask.R
 import com.example.currencytask.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -28,17 +30,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        initBottomNavigation()
-        controlBottomNavVisibility()
+
+        binding.root.post {
+            initBottomNavigation()
+            controlBottomNavVisibility()
+        }
     }
 
     /**
      * Init bottom navigation view
      */
     private fun initBottomNavigation() {
-        binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            navigateToDestination(item, navHostFragment.navController)
+        lifecycleScope.launch {
+            binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
+            binding.bottomNavigation.setOnItemSelectedListener { item ->
+                navigateToDestination(item, navHostFragment.navController)
+            }
         }
     }
 
@@ -85,5 +92,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 }

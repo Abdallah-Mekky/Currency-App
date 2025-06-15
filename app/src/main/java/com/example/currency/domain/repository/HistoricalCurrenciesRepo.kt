@@ -5,11 +5,20 @@ import kotlinx.coroutines.flow.Flow
 
 interface HistoricalCurrenciesRepo {
 
-    suspend fun getLastFourDays() : Flow<List<String>>
+    /** Get last four days **/
+    suspend fun getLastFourDays(): Flow<List<String>>
 
-    suspend fun insertHistoryCurrency(fromCurrencyToCurrency:String,fromCurrencyAmount:String,toCurrencyAmount: String,date : String)
+    /** Insert user transaction **/
+    suspend fun insertHistoryCurrency(
+        fromCurrencyToCurrency: String,
+        fromCurrencyAmount: String,
+        toCurrencyAmount: String,
+        date: String
+    )
 
-    suspend fun getHistoricalCurrenciesDataByDay(day : String) : Flow<List<HistoricalCurrenciesData>>
+    /** Get user transactions for specific day **/
+    suspend fun getHistoricalCurrenciesDataByDay(day: String): Flow<List<HistoricalCurrenciesData>>
 
-    suspend fun deleteDaysAfterFour(lastDay : String)
+    /** Delete all days after four days as per not needed **/
+    suspend fun deleteDaysAfterFour(lastDay: String)
 }

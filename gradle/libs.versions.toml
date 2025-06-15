@@ -24,6 +24,8 @@ dagger = "2.56"
 sdp = "1.1.1"
 serialization-converter = "1.0.0"
 ksp = "2.1.10-1.0.31" # Match this to your Kotlin version
+datastore = "1.1.7"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -65,6 +67,8 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

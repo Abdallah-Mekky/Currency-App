@@ -1,7 +1,6 @@
 package com.example.currency.presentation.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,17 +32,8 @@ class HomeFragment : Fragment() {
     val binding get() = _binding!!
 
     private val homeViewModel by viewModels<HomeViewModel>()
-    private lateinit var fromCurrenciesRatesAdapter: CurrencyRateAdapter
-    private lateinit var toCurrenciesRatesAdapter: CurrencyRateAdapter
-
-//    by lazy {
-//        CurrencyRateAdapter(requireContext(), mutableListOf())
-//    }
-//    by lazy {
-//        CurrencyRateAdapter(requireContext(), mutableListOf())
-//    }
-
-
+    private var fromCurrenciesRatesAdapter: CurrencyRateAdapter? = null
+    private var toCurrenciesRatesAdapter: CurrencyRateAdapter? = null
 
     private val onBackPressedCallback: OnBackPressedCallback by lazy {
         object : OnBackPressedCallback(true) {
@@ -55,7 +45,6 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("Api" , "HomeFragmnet :: onCrelate ")
         homeViewModel.getAllCurrenciesRates()
         homeViewModel.updateCurrencyCalculation(
             fromCurrencyCode = "USD",
@@ -84,11 +73,6 @@ class HomeFragment : Fragment() {
         handleSwapButtonClick()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     /**
      * Handle when user click back
      */
@@ -99,7 +83,10 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun initViewModelObserver(){
+    /**
+     * Initializes observers for the ViewModel's state flows within the fragment's lifecycle scope.
+     */
+    private fun initViewModelObserver() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             launch { subscribeToCurrenciesRates() }
             launch { subscribeToLastTimeUpdate() }
@@ -108,69 +95,23 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Observes the latest currency rates from the ViewModel and updates the UI.
+     */
     private suspend fun subscribeToCurrenciesRates() {
-        homeViewModel.currenciesRatesState.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
+        homeViewModel.currenciesRatesState.flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
             .flowOn(Dispatchers.IO).collectLatest { currenciesRatesList ->
                 currenciesRatesList?.let { currenciesList ->
-                    Log.e("Api" , "HomeFragmnet :: currenciesList = ${
-                        currenciesList.joinToString()
-                    } ")
                     bindCurrenciesRatesList(currenciesRatesList = currenciesList)
                 }
             }
     }
 
-    private suspend fun subscribeToLastTimeUpdate() {
-        homeViewModel.lastUpdateTimeState.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
-            .flowOn(Dispatchers.IO).collectLatest { lastUpdateTime ->
-                Log.e("Api" , "HomeFragmnet :: lastUpdateTime = ${
-                    lastUpdateTime
-                } ")
-
-                lastUpdateTime?.let { updatedTime ->
-                    bindLastUpdateTime(updatedTime)
-                }
-
-            }
-    }
-
-    private suspend fun subscribeToCurrencyCalculation() {
-        homeViewModel.currencyCalculationState.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
-            .flowOn(Dispatchers.IO).collectLatest { currencyCalculation ->
-                Log.e("Api" , "HomeFragmnet :: currencyCalculation = ${
-                    currencyCalculation.toString()
-                } ")
-
-                bindConvertedCurrencyAmount(currencyCalculation.toCurrencyAmount.toString())
-            }
-    }
-
-    private suspend fun subscribeToUiErrors() {
-        homeViewModel.uiErrors.flowWithLifecycle(lifecycle,Lifecycle.State.RESUMED)
-            .flowOn(Dispatchers.IO).collectLatest { message ->
-                Log.e("Api" , "HomeFragmnet :: subscribeToUiErrors error = ${
-                    message
-                } ")
-
-                bindErrorMessages(message)
-            }
-    }
-
-    private fun bindErrorMessages(message: String) {
-        if (message.isNotEmpty()){
-            binding.root.showSnackBar(message = message)
-        }
-    }
-
-//    private fun initDropDownMenusAdapters() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            binding.apply {
-//                fromAutoCompleteTextView.setAdapter(fromCurrenciesRatesAdapter)
-//                toAutoCompleteTextView.setAdapter(toCurrenciesRatesAdapter)
-//            }
-//        }
-//    }
-
+    /**
+     * Sets up and binds the currency rates list to the from/to dropdown adapters in the UI.
+     *
+     * @param currenciesRatesList
+     */
     private fun bindCurrenciesRatesList(currenciesRatesList: List<CurrenciesRatesData>) {
         viewLifecycleOwner.lifecycleScope.launch {
             fromCurrenciesRatesAdapter = CurrencyRateAdapter(
@@ -190,22 +131,81 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun bindLastUpdateTime(lastUpdateTime : String) {
+    /**
+     * Observes the last update time from the ViewModel and updates the UI.
+     */
+    private suspend fun subscribeToLastTimeUpdate() {
+        homeViewModel.lastUpdateTimeState.flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+            .flowOn(Dispatchers.IO).collectLatest { lastUpdateTime ->
+                lastUpdateTime?.let { updatedTime ->
+                    bindLastUpdateTime(updatedTime)
+                }
+            }
+    }
+
+    /**
+     * Updates the UI with the given last update time.
+     *
+     * @param lastUpdateTime
+     */
+    private fun bindLastUpdateTime(lastUpdateTime: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            "Last update time :$lastUpdateTime".also { binding.lastUpdateTimeText.text = it }
+             binding.lastUpdateTimeText.text = lastUpdateTime
         }
     }
 
+    /**
+     * Observes currency calculation results from the ViewModel and updates the UI.
+     */
+    private suspend fun subscribeToCurrencyCalculation() {
+        homeViewModel.currencyCalculationState.flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+            .flowOn(Dispatchers.IO).collectLatest { currencyCalculation ->
+                bindConvertedCurrencyAmount(currencyCalculation.toCurrencyAmount.toString())
+            }
+    }
+
+    /**
+     * Updates the "to amount" EditText with the converted currency amount.
+     *
+     * @param convertedAmount The calculated currency amount to display.
+     */
     private fun bindConvertedCurrencyAmount(convertedAmount: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.toAmountEditText.setText(convertedAmount)
         }
     }
 
+    /**
+     * Observes UI error messages from the ViewModel and displays them.
+     */
+    private suspend fun subscribeToUiErrors() {
+        homeViewModel.uiErrors.flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+            .flowOn(Dispatchers.IO).collectLatest { message ->
+                bindErrorMessages(message)
+            }
+    }
+
+    /**
+     * Displays an error message in a Snack-bar if the message is not empty.
+     *
+     * @param message The error message to show.
+     */
+    private fun bindErrorMessages(message: String) {
+        if (message.isNotEmpty()) {
+            binding.root.showSnackBar(message = message)
+        }
+    }
+
+    /**
+     * Listens for changes in the "from amount" EditText and updates the ViewModel.
+     *
+     * If the input is empty, sets the amount to 0.
+     * Otherwise, converts the input to an integer and updates it in the ViewModel.
+     */
     private fun handleFromCurrencyAmountChanges() {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.fromAmountEditText.doAfterTextChanged {
-                if (it.toString().isEmpty()){
+                if (it.toString().isEmpty()) {
                     homeViewModel.updateFromCurrencyAmount(0)
                 } else {
                     homeViewModel.updateFromCurrencyAmount(it.toString().toInt())
@@ -214,21 +214,34 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Handles selection changes for the "from" currency dropdown.
+     *
+     * When a currency is selected, updates the ViewModel with the selected
+     * currency code and rate.
+     */
     private fun handleFromCurrencyCodeUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.fromAutoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
                 val updatedCurrency = parent.getItemAtPosition(position) as CurrenciesRatesData
-                Log.d("Api", "FromCurrencyCodeUpdates Code=${updatedCurrency.currencyCode}, Name=${updatedCurrency.date}, Rate=${updatedCurrency.currencyRate}")
-                homeViewModel.updateFromCurrency(fromCurrencyCode = updatedCurrency.currencyCode, fromCurrencyRate = updatedCurrency.currencyRate)
+                homeViewModel.updateFromCurrency(
+                    fromCurrencyCode = updatedCurrency.currencyCode,
+                    fromCurrencyRate = updatedCurrency.currencyRate
+                )
             }
         }
     }
 
+    /**
+     * Handles selection changes for the "to" currency dropdown.
+     *
+     * When a currency is selected, updates the ViewModel with the selected
+     * currency code and rate.
+     */
     private fun handleToCurrencyCodeUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.toAutoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
                 val updatedCurrency = parent.getItemAtPosition(position) as CurrenciesRatesData
-                Log.d("Api", "ToCurrencyCodeUpdates Code=${updatedCurrency.currencyCode}, Name=${updatedCurrency.date}, Rate=${updatedCurrency.currencyRate}")
                 homeViewModel.updateToCurrency(
                     toCurrencyCode = updatedCurrency.currencyCode,
                     toCurrencyRate = updatedCurrency.currencyRate
@@ -237,16 +250,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Handles the swap button click to exchange the selected currencies.
+     *
+     * Swaps the "from" and "to" currency codes, updates the amount field,
+     * updates the ViewModel with the new values, and updates the dropdowns.
+     */
     private fun handleSwapButtonClick() {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.swapBtn.setOnClickListener {
                 binding.swapBtn.disable()
                 val fromCurrencyCode = binding.fromAutoCompleteTextView.text.toString()
                 val toCurrencyCode = binding.toAutoCompleteTextView.text.toString()
-                val toCurrencyAmount = BigDecimal(binding.toAmountEditText.text.toString()).setScale(3, RoundingMode.HALF_UP).toInt()
+                val toCurrencyAmount =
+                    BigDecimal(binding.toAmountEditText.text.toString()).setScale(
+                        3,
+                        RoundingMode.HALF_UP
+                    ).toInt()
 
                 binding.fromAmountEditText.setText(toCurrencyAmount.toString())
-                Log.d("Api", "handleSwapButtonClick amount = ${toCurrencyAmount}")
 
                 homeViewModel.updateCurrencyCalculation(
                     fromCurrencyCode = toCurrencyCode,
@@ -259,10 +281,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Swaps the selected values in the "from" and "to" currency dropdowns.
+     *
+     * Updates the UI to reflect the swapped currency codes.
+     *
+     * @param fromCurrencyCode The original "from" currency code.
+     * @param toCurrencyCode The original "to" currency code.
+     */
     private fun swapDropdowns(fromCurrencyCode: String, toCurrencyCode: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.fromAutoCompleteTextView.setText(toCurrencyCode,false)
-            binding.toAutoCompleteTextView.setText(fromCurrencyCode,false)
+            binding.fromAutoCompleteTextView.setText(toCurrencyCode, false)
+            binding.toAutoCompleteTextView.setText(fromCurrencyCode, false)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fromCurrenciesRatesAdapter = null
+        toCurrenciesRatesAdapter = null
+        _binding = null
     }
 }

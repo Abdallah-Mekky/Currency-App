@@ -12,13 +12,13 @@
 
     </data>
 
-        <TextView
-            android:id="@+id/selection_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_14ssp"
-            android:padding="@dimen/_8sdp"
-            tools:text="USD" />
+    <TextView
+        android:id="@+id/selection_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14ssp"
+        tools:text="USD" />
 
 </layout>

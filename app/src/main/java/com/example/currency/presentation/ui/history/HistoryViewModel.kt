@@ -1,6 +1,5 @@
 package com.example.currency.presentation.ui.history
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currency.domain.model.DayValidator
@@ -26,24 +25,32 @@ class HistoryViewModel @Inject constructor(
     private val deleteDaysAfterFourUseCase: DeleteDaysAfterFourUseCase
 ) : ViewModel() {
 
+    /** To track current day selection state **/
     private val _currentDaysState = MutableStateFlow<DayValidator?>(null)
     val currentDaysState: StateFlow<DayValidator?> = _currentDaysState
 
-    private val _historicalCurrenciesDataState = MutableStateFlow<List<HistoricalCurrenciesData>?>(null)
-    val historicalCurrenciesDataState: StateFlow<List<HistoricalCurrenciesData>?> = _historicalCurrenciesDataState
+    /** To track historical currencies / user transactions data state **/
+    private val _historicalCurrenciesDataState =
+        MutableStateFlow<List<HistoricalCurrenciesData>?>(null)
+    val historicalCurrenciesDataState: StateFlow<List<HistoricalCurrenciesData>?> =
+        _historicalCurrenciesDataState
 
-    private val _uiErrors = MutableSharedFlow<String>()
+    /** To control ui errors to show error one time **/
+    private val _uiErrors = MutableSharedFlow<String>(replay = 1)
     val uiErrors: SharedFlow<String> = _uiErrors.asSharedFlow()
 
-    private var dayCounter : Int? = 0
-    private var maxDays : Int? = 3
-    private lateinit var fourDaysList : List<DayValidator>
+    private var dayCounter: Int? = 0 //Hold day
+    private var maxDays: Int? = 3
+    private lateinit var fourDaysList: List<DayValidator>
 
+    /**
+     * Retrieves the last four days of historical currency data and emits the current selected day to the UI.
+     */
     fun getLastFourDays() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 getLastFourDaysUseCase.invoke().collectLatest { lastFourDaysList ->
-                    if(lastFourDaysList.isNotEmpty()) {
+                    if (lastFourDaysList.isNotEmpty()) {
                         fourDaysList = lastFourDaysList
                         getHistoricalCurrenciesData(fourDaysList[dayCounter!!].currentDay)
                         _currentDaysState.emit(fourDaysList[dayCounter!!])
@@ -55,6 +62,9 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Advances to the next available day in the [fourDaysList] and updates the historical data accordingly.
+     */
     fun getNextDay() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -66,11 +76,12 @@ class HistoryViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _uiErrors.emit(exception.message ?: "")
             }
-
         }
-
     }
 
+    /**
+     * Moves to the previous available day in the [fourDaysList] and updates the historical data accordingly.
+     */
     fun getPreviousDay() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -82,29 +93,30 @@ class HistoryViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _uiErrors.emit(exception.message ?: "")
             }
-
         }
     }
 
+    /**
+     * Retrieves historical currency conversion data for a specific [day] and updates the UI state accordingly.
+     *
+     * @param day The day for which to load historical currency data (formatted as a string).
+     */
     private fun getHistoricalCurrenciesData(day: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                getHistoricalCurrenciesDataByDayUseCase.invoke(day = day).collect { historicalCurrenciesDataList ->
-                    Log.e("Api" , "History VIEWMODEL :: ,day = ${day} ,  getHistoricalCurrenciesData = ${
-                        historicalCurrenciesDataList.joinToString()
-                    } ")
-                    if (historicalCurrenciesDataList.isNotEmpty()) {
-                        _historicalCurrenciesDataState.emit(historicalCurrenciesDataList)
-                    } else {
-                        _historicalCurrenciesDataState.emit(emptyList())
-                    }
+                getHistoricalCurrenciesDataByDayUseCase.invoke(day = day)
+                    .collect { historicalCurrenciesDataList ->
+                        if (historicalCurrenciesDataList.isNotEmpty()) {
+                            _historicalCurrenciesDataState.emit(historicalCurrenciesDataList)
+                        } else {
+                            _historicalCurrenciesDataState.emit(emptyList())
+                        }
 
-                    deleteDaysAfterFourUseCase.invoke(fourDaysList.first().currentDay)
-                }
+                        deleteDaysAfterFourUseCase.invoke(fourDaysList.first().currentDay)
+                    }
             } catch (exception: Exception) {
                 _uiErrors.emit(exception.message ?: "")
             }
-
         }
     }
 

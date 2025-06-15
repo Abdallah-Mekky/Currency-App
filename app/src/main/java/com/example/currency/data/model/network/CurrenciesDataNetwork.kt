@@ -1,6 +1,5 @@
 package com.example.currency.data.model.network
 
-import com.example.currency.domain.model.CurrenciesRatesData
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

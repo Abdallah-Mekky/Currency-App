@@ -9,7 +9,7 @@ import com.example.currency.domain.model.HistoricalCurrenciesData
 data class HistoricalCurrenciesDataEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo
-    val id: Int = 0 ,
+    val id: Int = 0,
     @ColumnInfo
     val date: String,
     @ColumnInfo(name = "from_currency_to_Currency")
@@ -19,6 +19,7 @@ data class HistoricalCurrenciesDataEntity(
     @ColumnInfo(name = "to_amount")
     val toCurrencyAmount: String
 ) {
+    /** To convert entity model to domain model [HistoricalCurrenciesData] **/
     fun toDomain() = HistoricalCurrenciesData(
         id = id,
         fromCurrencyToCurrency = fromCurrencyToCurrency,

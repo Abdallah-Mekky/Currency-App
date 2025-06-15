@@ -1,7 +1,7 @@
 package com.example.currency.di.local.preferences
 
 import android.content.Context
-import com.example.currency.data.source.local.preferences.SharedPrefs
+import com.example.currency.data.source.local.preferences.DataStores
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ object SharedPrefsModule {
 
     @Provides
     @Singleton
-    fun provideSharedPrefs(@ApplicationContext context: Context) : SharedPrefs {
-        return SharedPrefs(context)
+    fun provideSharedPrefs(@ApplicationContext context: Context): DataStores {
+        return DataStores(context)
     }
 }

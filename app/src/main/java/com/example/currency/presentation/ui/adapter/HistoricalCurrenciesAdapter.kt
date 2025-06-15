@@ -8,6 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.currency.domain.model.HistoricalCurrenciesData
 import com.example.currencytask.databinding.HistoricalCurrencyItemBinding
 
+/**
+ * A [ListAdapter] implementation for displaying a list of historical currency conversion transactions
+ * using data binding.
+ *
+ * This adapter uses DiffUtil to optimize list updates based on [HistoricalCurrenciesData.id].
+ * It binds each item to a layout via [HistoricalCurrencyItemBinding].
+ */
 class HistoricalCurrenciesAdapter :
     ListAdapter<HistoricalCurrenciesData, HistoricalCurrenciesAdapter.HistoricalCurrenciesViewHolder>(
         object : DiffUtil.ItemCallback<HistoricalCurrenciesData>() {
@@ -23,7 +30,10 @@ class HistoricalCurrenciesAdapter :
         }
     ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricalCurrenciesViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): HistoricalCurrenciesViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = HistoricalCurrencyItemBinding.inflate(layoutInflater, parent, false)
         return HistoricalCurrenciesViewHolder(binding)

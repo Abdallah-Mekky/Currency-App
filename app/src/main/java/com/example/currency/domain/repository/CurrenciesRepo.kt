@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface CurrenciesRepo {
 
-    suspend fun loadAllCurrenciesRates() : Result<Unit>
+    /** Load all currencies rates for first time or after 24 hours **/
+    suspend fun loadAllCurrenciesRates(): Result<Unit>
 
-    suspend fun getAllCurrenciesRates() : Flow<List<CurrenciesRatesData>>
+    /** Get all currencies rates **/
+    suspend fun getAllCurrenciesRates(): Flow<List<CurrenciesRatesData>>
 }

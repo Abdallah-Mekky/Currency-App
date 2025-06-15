@@ -42,14 +42,14 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideNetworkJson() =  Json {
+    fun provideNetworkJson() = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(networkJson : Json,client: OkHttpClient): Retrofit =
+    fun provideRetrofit(networkJson: Json, client: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)

@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,6 +14,8 @@ android {
     namespace = "com.example.currencytask"
     compileSdk = 35
 
+
+
     defaultConfig {
         applicationId = "com.example.currencytask"
         minSdk = 22
@@ -19,6 +24,28 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // return empty key in case something goes wrong
+        try {
+            val keystoreFile = project.rootProject.file("apikey.properties")
+            val properties = Properties()
+            properties.load(keystoreFile.inputStream())
+
+            val apiKey = properties.getProperty("FIXER_API_KEY") ?: ""
+            buildConfigField(
+                type = "String",
+                name = "FIXER_API_KEY",
+                value = apiKey,
+            )
+
+        } catch (e: FileNotFoundException) {
+            println("GRADLE:EXCEPTION ${e.message}")
+            buildConfigField(
+                type = "String",
+                name = "FIXER_API_KEY",
+                value = "\"EMPTY\"",
+            )
+        }
     }
 
     buildTypes {
@@ -40,6 +67,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        buildConfig = true
     }
 }
 
@@ -74,4 +102,5 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.datastore.preferences)
 }

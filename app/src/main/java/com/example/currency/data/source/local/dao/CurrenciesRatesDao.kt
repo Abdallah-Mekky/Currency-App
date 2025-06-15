@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CurrenciesRatesDao {
 
+    /** Insert currencies rates **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllCurrenciesRates(rates: List<CurrenciesDataEntity>)
 
+    /** Retrieve currencies rates **/
     @Query("SELECT * FROM currency_rates")
     fun getAllCurrenciesRates(): Flow<List<CurrenciesDataEntity>>
 
-//    @Query("SELECT COUNT(*) FROM currency_rates")
-//    suspend fun getCurrencyRatesCount(): Int
-
+    /** Get specific rate for specific currency code **/
     @Query("SELECT currency_rate FROM currency_rates WHERE currency_code = :currencyCode LIMIT 1")
     suspend fun getRateFor(currencyCode: String): Double?
 }

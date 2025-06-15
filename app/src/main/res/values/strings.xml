@@ -2,4 +2,10 @@
     <string name="app_name">CurrencyTask</string>
     <string name="home">Home</string>
     <string name="history">History</string>
+    <string name="there_is_no_data">There is no data</string>
+    <string name="from_txt">From</string>
+    <string name="currency_txt">Currency</string>
+    <string name="usd_txt">USD</string>
+    <string name="enter_amount_txt">Enter amount</string>
+    <string name="_1_for_default">1</string>
 </resources>

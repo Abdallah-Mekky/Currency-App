@@ -2,7 +2,6 @@ package com.example.currency.presentation.utils.ext
 
 import android.view.View
 import androidx.annotation.ColorRes
-import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
